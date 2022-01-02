@@ -1,7 +1,7 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private boolean[] opennessGrid;
+    private final boolean[] opennessGrid;
     private final WeightedQuickUnionUF percolationGrid;
     private final WeightedQuickUnionUF fullnessGrid;
     private final int n;
@@ -23,6 +23,9 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
+        System.out
+                .println("Basic functionality checks");
+
         Percolation percolation = new Percolation(4);
         System.out
                 .println("Grid percolates - false: " + percolation.percolates());
@@ -39,10 +42,6 @@ public class Percolation {
         percolation.open(4, 1);
 
         System.out.println("Grid should percolate - true: " + percolation.percolates());
-
-        System.out.println(
-                "System should throw an illegal argument exception: ");
-        percolation.open(-1, -1);
     }
 
     // opens a site (row, col) if it is not open already
@@ -73,10 +72,11 @@ public class Percolation {
                 topSiteIndex(index, row)
         };
 
-        for (int i = 0; i < adjacentSiteIndices.length; i++) {
-            if (adjacentSiteIndices[i] != -1 && opennessGrid[adjacentSiteIndices[i]]) {
-                percolationGrid.union(index, adjacentSiteIndices[i]);
-                fullnessGrid.union(index, adjacentSiteIndices[i]);
+        for (int adjacentSiteIndex :
+                adjacentSiteIndices) {
+            if (adjacentSiteIndex != -1 && opennessGrid[adjacentSiteIndex]) {
+                percolationGrid.union(index, adjacentSiteIndex);
+                fullnessGrid.union(index, adjacentSiteIndex);
             }
         }
     }
@@ -106,8 +106,7 @@ public class Percolation {
 
     private int siteIndex(int row, int col) {
         validateIndex(row, col);
-        int index = ((row - 1) * n) + col - 1;
-        return index;
+        return ((row - 1) * n) + col - 1;
     }
 
     private int leftSiteIndex(int i, int col) {
@@ -120,8 +119,7 @@ public class Percolation {
     private int rightSiteIndex(int i, int col) {
         if (col != n) {
             return i + 1;
-        }
-        else {
+        } else {
             return -1;
         }
     }
