@@ -4,13 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-    // number of items in array used to maintain correct array size
     private int n = 0;
-    // index used to add items in a reasonable order
-    private int index = 0;
     private Object[] queue = new Object[1];
-    private int[] permutation = StdRandom.permutation(queue.length);
-    private int permutationIndex = 0;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
@@ -30,12 +25,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public void enqueue(Item item) {
         if (item == null) throw new IllegalArgumentException("Enqueued item is null");
 
-        if (index == queue.length) {
-            // index = 0; // doesn't work because some queue elements could still have items in them
-            resetToLength(queue.length);
-        }
-        queue[index] = item;
-        index++;
+        queue[n] = item;
         n++;
 
         if (n * 2 >= queue.length) {
@@ -47,11 +37,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item dequeue() {
         if (size() == 0) throw new NoSuchElementException("Queue is empty");
 
-        Item item = (Item) queue[permutation[permutationIndex]];
-        queue[permutation[permutationIndex]] = null;
+        int index = StdRandom.uniform(n);
+        Item item = (Item) queue[index];
+        queue[index] = queue[n];
+        queue[n] = null;
         --n;
-        permutationIndex++;
-
 
         if (n * 4 <= queue.length) {
             resetToLength(queue.length / 2);
@@ -109,32 +99,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private void resetToLength(int length) {
         Object[] newQueue = new Object[length];
-        for (int i = 0; i < queue.length; i++) {
-            if (queue[i] != null) {
-                newQueue[i] = queue[i];
-            }
-        }
+        System.arraycopy(queue, 0, newQueue, 0, n);
         queue = newQueue;
-        permutation = StdRandom.permutation(queue.length);
-        permutationIndex = 0;
-        index = n;
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
-        int permutationIndex = 0;
-        int[] permutation = StdRandom.permutation(queue.length);
+        int index = 0;
 
         public boolean hasNext() {
-            return queue[permutation[permutationIndex]] != null;
+            return index < n;
         }
 
         public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("Queue is empty");
             }
-            Item item = (Item) queue[permutation[permutationIndex]];
-            permutationIndex++;
-            return item;
+            return (Item) queue[StdRandom.uniform(n)];
         }
 
         public void remove() {
