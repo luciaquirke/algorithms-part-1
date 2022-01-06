@@ -39,8 +39,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         int index = StdRandom.uniform(n);
         Item item = (Item) queue[index];
-        queue[index] = queue[n];
-        queue[n] = null;
+        queue[index] = queue[n - 1];
+        queue[n - 1] = null;
         --n;
 
         if (n * 4 <= queue.length) {
@@ -104,17 +104,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
-        int index = 0;
-
         public boolean hasNext() {
-            return index < n;
+            return n != 0;
         }
 
         public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("Queue is empty");
             }
-            return (Item) queue[StdRandom.uniform(n)];
+            int index = StdRandom.uniform(n);
+            Item item = (Item) queue[index];
+            queue[index] = queue[n - 1];
+            queue[n - 1] = null;
+            --n;
+            
+            return item;
         }
 
         public void remove() {
