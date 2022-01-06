@@ -104,20 +104,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
+        int[] permutation = StdRandom.permutation(n);
+        int permutationIndex = 0;
+
         public boolean hasNext() {
-            return n != 0;
+            return n != permutationIndex;
         }
 
         public Item next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("Queue is empty");
             }
-            int index = StdRandom.uniform(n);
-            Item item = (Item) queue[index];
-            queue[index] = queue[n - 1];
-            queue[n - 1] = null;
-            --n;
-            
+            Item item = (Item) queue[permutation[permutationIndex]];
+            permutationIndex++;
+
             return item;
         }
 
