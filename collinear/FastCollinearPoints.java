@@ -26,7 +26,7 @@ public class FastCollinearPoints {
             while (j < points.length - 3) {
                 if (pointSlopes[j] == pointSlopes[j + 1] && pointSlopes[j + 1] == pointSlopes[j + 2] && pointSlopes[j + 2] == pointSlopes[j + 3]) {
                     int extraPoints = 0;
-                    while (pointSlopes[j] == pointSlopes[j + 4 + extraPoints]) {
+                    while (points.length > (j + 4 + extraPoints) && pointSlopes[j] == pointSlopes[j + 4 + extraPoints]) {
                         extraPoints++;
                     }
                     segments[count] = new LineSegment(points[j], points[j + 3 + extraPoints]);
@@ -92,7 +92,8 @@ public class FastCollinearPoints {
                 throw new IllegalArgumentException("point must not be null");
             }
             for (int j = i + 1; j < points.length; j++) {
-                if (points[i] == points[j]) {
+                if (points[i].compareTo(points[j]) == 0) {
+                    System.out.println("duplicate points at indices " + i + " and " + j + ". Points: " + points[i] + ", " + points[j]);
                     throw new IllegalArgumentException("points must not be duplicates");
                 }
             }
