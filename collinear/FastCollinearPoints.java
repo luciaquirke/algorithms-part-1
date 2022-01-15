@@ -11,33 +11,27 @@ public class FastCollinearPoints {
 
     // finds all line segments containing 4 or more points
     public FastCollinearPoints(Point[] points) {
-        if (points == null) {
-            throw new IllegalArgumentException("points must not be null");
-        }
+        validatePoints(points);
+
         segments = new LineSegment[points.length];
-
-        for (int i = 0; i < points.length; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i] == points[j]) {
-                    throw new IllegalArgumentException("points must not be duplicates");
-                }
-            }
-        }
-
         int count = 0;
         for (Point point : points) {
-            if (point == null) {
-                throw new IllegalArgumentException("point must not be null");
+            Arrays.sort(points, point.slopeOrder());
+            double[] pointSlopes = new double[points.length];
+            for (int slopeIndex = 0; slopeIndex < points.length; slopeIndex++) {
+                pointSlopes[slopeIndex] = point.slopeTo(points[slopeIndex]);
             }
 
-            // do not include overlapping segments (find segments even if they're greater than 4)
-            Arrays.sort(points, point.slopeOrder());
             int j = 0;
             while (j < points.length - 3) {
-                if (point.slopeTo(points[j]) == point.slopeTo(points[j + 1]) && point.slopeTo(points[j + 1]) == point.slopeTo(points[j + 2]) && point.slopeTo(points[j + 2]) == point.slopeTo(points[j + 3])) {
-                    segments[count] = new LineSegment(points[j], points[j + 3]);
+                if (pointSlopes[j] == pointSlopes[j + 1] && pointSlopes[j + 1] == pointSlopes[j + 2] && pointSlopes[j + 2] == pointSlopes[j + 3]) {
+                    int extraPoints = 0;
+                    while (pointSlopes[j] == pointSlopes[j + 4 + extraPoints]) {
+                        extraPoints++;
+                    }
+                    segments[count] = new LineSegment(points[j], points[j + 3 + extraPoints]);
                     count++;
-                    j += 1; // += amount above we found a line segment;
+                    j += 1 + extraPoints;
                 } else {
                     j++;
                 }
@@ -87,5 +81,21 @@ public class FastCollinearPoints {
             segment.draw();
         }
         StdDraw.show();
+    }
+
+    private void validatePoints(Point[] points) {
+        if (points == null) {
+            throw new IllegalArgumentException("points must not be null");
+        }
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException("point must not be null");
+            }
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i] == points[j]) {
+                    throw new IllegalArgumentException("points must not be duplicates");
+                }
+            }
+        }
     }
 }
