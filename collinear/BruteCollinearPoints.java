@@ -1,8 +1,8 @@
 import java.util.Comparator;
 
 public class BruteCollinearPoints {
-    private LineSegment[] segments = {};
-    private int n = 0;
+    private final LineSegment[] segments;
+    private final int n;
 
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
@@ -13,6 +13,8 @@ public class BruteCollinearPoints {
         // sort points and discard duplicates?
 
         // permutation without repetition
+        int count = 0;
+        segments = new LineSegment[points.length];
         for (int i = 0; i < points.length; i++) { // -3 to avoid out of bounds errors in successive loops which go 3 above ?
             for (int j = 0; j < points.length; j++) {
                 if (j == i) {
@@ -30,14 +32,15 @@ public class BruteCollinearPoints {
                         if (points[i].compareTo(points[j]) > 0 && points[j].compareTo(points[k]) > 0 && points[k].compareTo(points[l]) > 0) {
                             Comparator<Point> slopeComparator = points[i].slopeOrder();
                             if (slopeComparator.compare(points[j], points[k]) == 0 && slopeComparator.compare(points[k], points[l]) == 0) {
-                                segments[n] = new LineSegment(points[i], points[l]);
-                                n++;
+                                segments[count] = new LineSegment(points[i], points[l]);
+                                count++;
                             }
                         }
                     }
                 }
             }
         }
+        n = count;
     }
 
     // the number of line segments
@@ -47,6 +50,8 @@ public class BruteCollinearPoints {
 
     // the line segments
     public LineSegment[] segments() {
-        return segments;
+        LineSegment[] segmentsCopy = new LineSegment[n];
+        System.arraycopy(segments, 0, segmentsCopy, 0, n);
+        return segmentsCopy;
     }
 }

@@ -2,13 +2,12 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 
 public class FastCollinearPoints {
     private final LineSegment[] segments;
-    private int n = 0;
+    private final int n;
 
     // finds all line segments containing 4 or more points
     public FastCollinearPoints(Point[] points) {
@@ -25,6 +24,7 @@ public class FastCollinearPoints {
             }
         }
 
+        int count = 0;
         for (Point point : points) {
             if (point == null) {
                 throw new IllegalArgumentException("point must not be null");
@@ -35,14 +35,15 @@ public class FastCollinearPoints {
             int j = 0;
             while (j < points.length - 3) {
                 if (point.slopeTo(points[j]) == point.slopeTo(points[j + 1]) && point.slopeTo(points[j + 1]) == point.slopeTo(points[j + 2]) && point.slopeTo(points[j + 2]) == point.slopeTo(points[j + 3])) {
-                    segments[n] = new LineSegment(points[j], points[j + 3]);
-                    n++;
+                    segments[count] = new LineSegment(points[j], points[j + 3]);
+                    count++;
                     j += 1; // += amount above we found a line segment;
                 } else {
                     j++;
                 }
             }
         }
+        n = count;
     }
 
     // the number of line segments
@@ -57,7 +58,7 @@ public class FastCollinearPoints {
         return segmentsCopy;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
