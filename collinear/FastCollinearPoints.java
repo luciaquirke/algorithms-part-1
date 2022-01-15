@@ -58,7 +58,6 @@ public class FastCollinearPoints {
         int n = in.readInt();
         Point[] points = new Point[n];
         for (int i = 0; i < n; i++) {
-            System.out.println("looping");
             int x = in.readInt();
             int y = in.readInt();
             points[i] = new Point(x, y);
@@ -69,7 +68,6 @@ public class FastCollinearPoints {
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
         for (Point p : points) {
-            System.out.println("point: " + p);
             p.draw();
         }
         StdDraw.show();
@@ -93,7 +91,6 @@ public class FastCollinearPoints {
             }
             for (int j = i + 1; j < points.length; j++) {
                 if (points[i].compareTo(points[j]) == 0) {
-                    System.out.println("duplicate points at indices " + i + " and " + j + ". Points: " + points[i] + ", " + points[j]);
                     throw new IllegalArgumentException("points must not be duplicates");
                 }
             }
