@@ -11,10 +11,21 @@
       <sourceFolder url="file://$MODULE_DIR$/hello" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/percolation" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/queues" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/collinear" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name=".lift" level="project" />
     <orderEntry type="library" name=".lift1" level="project" />
+    <orderEntry type="module-library">
+      <library name="spotbugs-annotations">
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/com/github/spotbugs/spotbugs-annotations/4.0.1/spotbugs-annotations-4.0.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
