@@ -1,4 +1,10 @@
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.io.FileNotFoundException;
 import java.util.Arrays;
+
 
 public class FastCollinearPoints {
     private final LineSegment[] segments;
@@ -46,16 +52,18 @@ public class FastCollinearPoints {
 
     // the line segments
     public LineSegment[] segments() {
-        return segments;
+        LineSegment[] segmentsCopy = new LineSegment[n];
+        System.arraycopy(segments, 0, segmentsCopy, 0, n);
+        return segmentsCopy;
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws FileNotFoundException {
         // read the n points from a file
         In in = new In(args[0]);
         int n = in.readInt();
         Point[] points = new Point[n];
         for (int i = 0; i < n; i++) {
+            System.out.println("looping");
             int x = in.readInt();
             int y = in.readInt();
             points[i] = new Point(x, y);
@@ -66,6 +74,7 @@ public class FastCollinearPoints {
         StdDraw.setXscale(0, 32768);
         StdDraw.setYscale(0, 32768);
         for (Point p : points) {
+            System.out.println("point: " + p);
             p.draw();
         }
         StdDraw.show();

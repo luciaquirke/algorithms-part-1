@@ -109,17 +109,7 @@ public class Point implements Comparable<Point> {
 
     private class SlopeOrderComparator implements Comparator<Point> {
         public int compare(Point o1, Point o2) {
-
-            double slope1 = slopeTo(o1);
-            double slope2 = slopeTo(o2);
-
-            if (slope1 > slope2) {
-                return 1;
-            }
-            if (slope1 < slope2) {
-                return -1;
-            }
-            return 0;
+            return Double.compare(slopeTo(o1), slopeTo(o2));
         }
     }
 
@@ -142,8 +132,6 @@ public class Point implements Comparable<Point> {
         System.out.println("Running tests...");
         Point point1 = new Point(1, 1);
         Point point2 = new Point(1, 1);
-        Point point3 = new Point(1, 2);
-        Point point4 = new Point(2, 1);
 
         assert (point1.slopeTo(point2) == Double.NEGATIVE_INFINITY);
         System.out.println("Success!");
