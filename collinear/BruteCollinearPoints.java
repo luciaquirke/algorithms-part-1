@@ -24,15 +24,15 @@ public class BruteCollinearPoints {
                     if (i == k || j == k) {
                         continue;
                     }
-                    for (int l = 0; l < points.length; l++) {
-                        if (i == l || i == j) {
+                    for (int m = 0; m < points.length; m++) {
+                        if (i == m || i == j) {
                             continue;
                         }
                         // points in ascending order
-                        if (points[i].compareTo(points[j]) > 0 && points[j].compareTo(points[k]) > 0 && points[k].compareTo(points[l]) > 0) {
+                        if (points[i].compareTo(points[j]) > 0 && points[j].compareTo(points[k]) > 0 && points[k].compareTo(points[m]) > 0) {
                             Comparator<Point> slopeComparator = points[i].slopeOrder();
-                            if (slopeComparator.compare(points[j], points[k]) == 0 && slopeComparator.compare(points[k], points[l]) == 0) {
-                                segments[count] = new LineSegment(points[i], points[l]);
+                            if (slopeComparator.compare(points[j], points[k]) == 0 && slopeComparator.compare(points[k], points[m]) == 0) {
+                                segments[count] = new LineSegment(points[i], points[m]);
                                 count++;
                             }
                         }
