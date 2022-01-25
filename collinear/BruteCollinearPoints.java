@@ -6,7 +6,21 @@ public class BruteCollinearPoints {
 
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
-        validatePoints(points);
+        if (points == null) {
+            throw new IllegalArgumentException("points must not be null");
+        }
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException("point must not be null");
+            }
+        }
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                if (points[i].compareTo(points[j]) == 0) {
+                    throw new IllegalArgumentException("points must not be duplicates");
+                }
+            }
+        }
 
         // permutation without repetition
         int count = 0;
@@ -38,7 +52,8 @@ public class BruteCollinearPoints {
                             continue;
                         }
                         // points in ascending order
-                        if (pointCompareTos[i][j] > 0 && pointCompareTos[j][k] > 0 && pointCompareTos[k][m] > 0) {
+                        if (pointCompareTos[i][j] > 0 && pointCompareTos[j][k] > 0
+                                && pointCompareTos[k][m] > 0) {
                             if (pointCompares[i][j][k] == 0 && pointCompares[i][k][m] == 0) {
                                 segments[count] = new LineSegment(points[i], points[m]);
                                 count++;
@@ -61,21 +76,5 @@ public class BruteCollinearPoints {
         LineSegment[] segmentsCopy = new LineSegment[n];
         System.arraycopy(segments, 0, segmentsCopy, 0, n);
         return segmentsCopy;
-    }
-
-    private void validatePoints(Point[] points) {
-        if (points == null) {
-            throw new IllegalArgumentException("points must not be null");
-        }
-        for (int i = 0; i < points.length; i++) {
-            if (points[i] == null) {
-                throw new IllegalArgumentException("point must not be null");
-            }
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].compareTo(points[j]) == 0) {
-                    throw new IllegalArgumentException("points must not be duplicates");
-                }
-            }
-        }
     }
 }
