@@ -6,9 +6,8 @@
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
-
-import java.util.ArrayList;
 
 public class Solver {
     private final Node lastNode;
@@ -72,11 +71,11 @@ public class Solver {
             return null;
         }
 
-        ArrayList<Board> boards = new ArrayList<>();
+        Stack<Board> boards = new Stack<>();
         Node node = lastNode;
 
         while (node != null) {
-            boards.add(node.board);
+            boards.push(node.board);
             node = node.previous;
         }
 
