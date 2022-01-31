@@ -9,34 +9,35 @@ import edu.princeton.cs.algs4.Queue;
 import java.util.Arrays;
 
 public class Board {
-    private final int[][] board;
+    private final int[][] tiles;
     private final int dimension;
-    private Board goalBoard;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
     public Board(int[][] tiles) {
         dimension = tiles.length;
-        board = new int[dimension + 1][dimension + 1];
+
+        this.tiles = new int[dimension + 1][dimension + 1];
         for (int i = 0; i < dimension; i++) {
-            System.arraycopy(tiles[i], 0, board[i + 1], 1, dimension);
+            for (int j = 0; j < dimension; j++) {
+                this.tiles[i + 1][j + 1] = tiles[i][j];
+            }
         }
     }
 
     // string representation of this board
     public String toString() {
-        StringBuilder boardRepresentation = new StringBuilder();
-        boardRepresentation.append(dimension);
-        boardRepresentation.append('\n');
+        StringBuilder s = new StringBuilder();
+        s.append(dimension);
+        s.append('\n');
 
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
-                boardRepresentation.append(board[i][j]);
-                boardRepresentation.append(' ');
+                s.append(String.format("%2d ", tiles[i][j]));
             }
-            boardRepresentation.append('\n');
+            s.append('\n');
         }
-        return boardRepresentation.toString();
+        return s.toString();
     }
 
     // board dimension n
@@ -47,11 +48,13 @@ public class Board {
     // number of tiles out of place
     public int hamming() {
         int hamming = 0;
+        int goalValue = 1;
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
-                if (board[i][j] != 0 && board[i][j] != getGoalBoard().board[i][j]) {
+                if (tiles[i][j] != 0 && tiles[i][j] != goalValue) {
                     hamming++;
                 }
+                goalValue++;
             }
         }
         return hamming;
@@ -60,14 +63,18 @@ public class Board {
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
         int manhattan = 0;
+        int goalValue = 1;
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
-                if (board[i][j] != 0 && board[i][j] != getGoalBoard().board[i][j]) {
-                    // Finds the current tile's location on the goal board
-                    GoalTile goalTile = new GoalTile(board[i][j]);
-                    manhattan += Math.abs(goalTile.row - i);
-                    manhattan += Math.abs(goalTile.col - j);
+                if (tiles[i][j] != 0 && tiles[i][j] != goalValue) {
+                    // is this wrong?
+                    int goalRow = ((goalValue - 1) / dimension) + 1;
+                    int goalCol = goalValue % dimension;
+                    System.out.println("Goal row: " + goalRow + " Goal col: " + goalCol);
+                    manhattan += Math.abs(goalRow - i);
+                    manhattan += Math.abs(goalCol - j);
                 }
+                goalValue++;
             }
         }
         return manhattan;
@@ -75,7 +82,21 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return this.equals(getGoalBoard());
+        int goalValue = 1;
+        for (int i = 1; i <= dimension; i++) {
+            for (int j = 1; j <= dimension; j++) {
+                if (i == dimension && j == dimension) {
+                    if (this.tiles[i][j] != 0) {
+                        return false;
+                    }
+                }
+                else if (this.tiles[i][j] != goalValue) {
+                    return false;
+                }
+                goalValue++;
+            }
+        }
+        return true;
     }
 
     // does this board equal y?
@@ -88,7 +109,7 @@ public class Board {
             return false;
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
-                if (this.board[i][j] != ((Board) y).board[i][j]) {
+                if (this.tiles[i][j] != ((Board) y).tiles[i][j]) {
                     return false;
                 }
             }
@@ -132,7 +153,7 @@ public class Board {
 
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
-                if (board[i][j] != 0) {
+                if (tiles[i][j] != 0) {
                     if (first == null) {
                         first = new Tile(i, j);
                     }
@@ -164,25 +185,6 @@ public class Board {
         System.out.println("Checking if board equals reference board: " + testBoard.isGoal());
     }
 
-    private class GoalTile {
-        public final int row;
-        public final int col;
-        public final int i;
-
-        // i, row, and col are all 1-indexed
-        public GoalTile(int i) {
-            this.row = ((i - 1) / dimension) + 1;
-            this.col = ((i - 1) % dimension) + 1;
-            this.i = i;
-        }
-
-        public GoalTile(int row, int col) {
-            this.row = row;
-            this.col = col;
-            this.i = ((row - 1) * dimension) + col;
-        }
-    }
-
     // holds conversion information for tile indices.
     private class Tile {
         public int row;
@@ -193,13 +195,13 @@ public class Board {
         public Tile(int value) {
             for (int i = 1; i <= dimension; i++) {
                 for (int j = 1; j <= dimension; j++) {
-                    if (board[i][j] == value) {
+                    if (tiles[i][j] == value) {
                         this.row = i;
                         this.col = j;
                         this.goalValue = (this.row - 1) * dimension + this.col;
                         this.value = value;
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -208,39 +210,20 @@ public class Board {
             this.row = row;
             this.col = col;
             this.goalValue = (this.row - 1) * dimension + this.col;
-            this.value = board[row][col];
+            this.value = tiles[row][col];
         }
 
-    }
-
-    private Board getGoalBoard() {
-        if (goalBoard != null) {
-            return goalBoard;
-        }
-
-        int[][] goalBoardArray = new int[dimension + 1][dimension + 1];
-        int tileNumber = 1;
-        for (int i = 1; i <= dimension; i++) {
-            for (int j = 1; j <= dimension; j++) {
-                goalBoardArray[i][j] = tileNumber;
-                tileNumber += 1;
-            }
-        }
-        goalBoardArray[dimension][dimension] = 0;
-
-        goalBoard = new Board(goalBoardArray);
-        return goalBoard;
     }
 
     private Board swap(Tile first, Tile second) {
         Board newBoard = cloneBoard();
-        newBoard.board[first.row][first.col] = second.value;
-        newBoard.board[second.row][second.col] = first.value;
+        newBoard.tiles[first.row][first.col] = second.value;
+        newBoard.tiles[second.row][second.col] = first.value;
         return newBoard;
     }
 
     private Board cloneBoard() {
-        int[][] newBoardArray = Arrays.stream(this.board).map(int[]::clone).toArray(int[][]::new);
+        int[][] newBoardArray = Arrays.stream(this.tiles).map(int[]::clone).toArray(int[][]::new);
         return new Board(newBoardArray);
     }
 }

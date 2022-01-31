@@ -122,9 +122,7 @@ public class Solver {
             this.moves = previous == null ? 1 : previous.moves + 1;
             this.board = board;
             System.out.println("moves" + this.moves);
-            System.out.println("manhattan" + this.board.manhattan());
             this.priority = this.board.manhattan() + this.moves;
-            System.out.println("priority" + this.priority);
         }
 
         public int compareTo(Node that) {
