@@ -119,20 +119,20 @@ public class Board {
         Tile emptyTile = new Tile(0);
         Queue<Board> neighbors = new Queue<>();
 
-        if (emptyTile.row != 1) {
-            Tile leftTile = new Tile(emptyTile.row - 1, emptyTile.col);
+        if (emptyTile.getRow() != 1) {
+            Tile leftTile = new Tile(emptyTile.getRow() - 1, emptyTile.getCol());
             neighbors.enqueue(swap(emptyTile, leftTile));
         }
-        if (emptyTile.row != dimension) {
-            Tile rightTile = new Tile(emptyTile.row + 1, emptyTile.col);
+        if (emptyTile.getRow() != dimension) {
+            Tile rightTile = new Tile(emptyTile.getRow() + 1, emptyTile.getCol());
             neighbors.enqueue(swap(emptyTile, rightTile));
         }
-        if (emptyTile.col != 1) {
-            Tile topTile = new Tile(emptyTile.row, emptyTile.col - 1);
+        if (emptyTile.getCol() != 1) {
+            Tile topTile = new Tile(emptyTile.getRow(), emptyTile.getCol() - 1);
             neighbors.enqueue(swap(emptyTile, topTile));
         }
-        if (emptyTile.col != dimension) {
-            Tile bottomTile = new Tile(emptyTile.row, emptyTile.col + 1);
+        if (emptyTile.getCol() != dimension) {
+            Tile bottomTile = new Tile(emptyTile.getRow(), emptyTile.getCol() + 1);
             neighbors.enqueue(swap(emptyTile, bottomTile));
         }
 
@@ -184,10 +184,9 @@ public class Board {
 
     // holds conversion information for tile indices.
     private class Tile {
-        public int row;
-        public int col;
-        public int goalValue;
-        public int value;
+        private int row;
+        private int col;
+        private int value;
 
         public Tile(int value) {
             for (int i = 1; i <= dimension; i++) {
@@ -195,7 +194,6 @@ public class Board {
                     if (tiles[i][j] == value) {
                         this.row = i;
                         this.col = j;
-                        this.goalValue = (this.row - 1) * dimension + this.col;
                         this.value = value;
                         break;
                     }
@@ -206,15 +204,26 @@ public class Board {
         public Tile(int row, int col) {
             this.row = row;
             this.col = col;
-            this.goalValue = (this.row - 1) * dimension + this.col;
             this.value = tiles[row][col];
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 
     private Board swap(Tile first, Tile second) {
         Board newBoard = cloneBoard();
-        newBoard.tiles[first.row][first.col] = second.value;
-        newBoard.tiles[second.row][second.col] = first.value;
+        newBoard.tiles[first.getRow()][first.getCol()] = second.getValue();
+        newBoard.tiles[second.getRow()][second.getCol()] = first.getValue();
         return newBoard;
     }
 

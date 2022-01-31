@@ -25,20 +25,22 @@ public class Solver {
         Node twinCurrentNode = new Node(null, initial.twin());
 
         // modify to do the board and its twin in lockstep
-        while (!currentNode.board.isGoal() && !twinCurrentNode.board.isGoal()) {
-            Iterable<Board> neighbors = currentNode.board.neighbors();
-            Iterable<Board> twinNeighbors = twinCurrentNode.board.neighbors();
+        while (!currentNode.getBoard().isGoal() && !twinCurrentNode.getBoard().isGoal()) {
+            Iterable<Board> neighbors = currentNode.getBoard().neighbors();
+            Iterable<Board> twinNeighbors = twinCurrentNode.getBoard().neighbors();
             Node copyCurrentNode = currentNode;
             Node copyTwinCurrentNode = twinCurrentNode;
             neighbors.forEach(neighbor -> {
-                if (copyCurrentNode.previous == null || !copyCurrentNode.previous.board
-                        .equals(neighbor)) {
+                if (copyCurrentNode.getPrevious() == null || !copyCurrentNode.getPrevious()
+                                                                             .getBoard()
+                                                                             .equals(neighbor)) {
                     minPQ.insert(new Node(copyCurrentNode, neighbor));
                 }
             });
             twinNeighbors.forEach(neighbor -> {
-                if (copyTwinCurrentNode.previous == null || !copyTwinCurrentNode.previous.board
-                        .equals(neighbor)) {
+                if (copyTwinCurrentNode.getPrevious() == null || !copyTwinCurrentNode.getPrevious()
+                                                                                     .getBoard()
+                                                                                     .equals(neighbor)) {
                     twinMinPQ.insert(new Node(copyTwinCurrentNode, neighbor));
                 }
             });
@@ -46,7 +48,7 @@ public class Solver {
             twinCurrentNode = twinMinPQ.delMin();
         }
 
-        isSolvable = currentNode.board.isGoal();
+        isSolvable = currentNode.getBoard().isGoal();
         if (isSolvable()) {
             lastNode = currentNode;
         }
@@ -75,8 +77,8 @@ public class Solver {
         Node node = lastNode;
 
         while (node != null) {
-            boards.push(node.board);
-            node = node.previous;
+            boards.push(node.getBoard());
+            node = node.getPrevious();
         }
 
         return boards;
@@ -109,15 +111,15 @@ public class Solver {
 
     private class Node implements Comparable<Node> {
         public final int moves;
-        public final Board board;
-        public final Node previous;
+        private final Board board;
+        private final Node previous;
         private final int priority;
 
         public Node(Node previous, Board board) {
             this.previous = previous;
             this.moves = previous == null ? 1 : previous.moves + 1;
             this.board = board;
-            this.priority = this.board.manhattan() + this.moves;
+            this.priority = this.getBoard().manhattan() + this.moves;
         }
 
         public int compareTo(Node that) {
@@ -128,6 +130,14 @@ public class Solver {
                 return 0;
             }
             return -1;
+        }
+
+        public Board getBoard() {
+            return board;
+        }
+
+        public Node getPrevious() {
+            return previous;
         }
     }
 }
