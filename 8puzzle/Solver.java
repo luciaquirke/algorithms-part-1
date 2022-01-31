@@ -95,11 +95,8 @@ public class Solver {
                 tiles[i][j] = in.readInt();
         Board initial = new Board(tiles);
 
-        System.out.println("made board");
         // solve the puzzle
         Solver solver = new Solver(initial);
-        System.out.println("made solver");
-
 
         // print solution to standard output
         if (!solver.isSolvable())
@@ -121,7 +118,6 @@ public class Solver {
             this.previous = previous;
             this.moves = previous == null ? 1 : previous.moves + 1;
             this.board = board;
-            System.out.println("moves" + this.moves);
             this.priority = this.board.manhattan() + this.moves;
         }
 

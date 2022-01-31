@@ -6,8 +6,6 @@
 
 import edu.princeton.cs.algs4.Queue;
 
-import java.util.Arrays;
-
 public class Board {
     private final int[][] tiles;
     private final int dimension;
@@ -69,8 +67,7 @@ public class Board {
                 if (tiles[i][j] != 0 && tiles[i][j] != goalValue) {
                     // is this wrong?
                     int goalRow = ((goalValue - 1) / dimension) + 1;
-                    int goalCol = goalValue % dimension;
-                    System.out.println("Goal row: " + goalRow + " Goal col: " + goalCol);
+                    int goalCol = ((goalValue - 1) % dimension) + 1;
                     manhattan += Math.abs(goalRow - i);
                     manhattan += Math.abs(goalCol - j);
                 }
@@ -134,7 +131,7 @@ public class Board {
             Tile topTile = new Tile(emptyTile.row, emptyTile.col - 1);
             neighbors.enqueue(swap(emptyTile, topTile));
         }
-        if (emptyTile.row != dimension) {
+        if (emptyTile.col != dimension) {
             Tile bottomTile = new Tile(emptyTile.row, emptyTile.col + 1);
             neighbors.enqueue(swap(emptyTile, bottomTile));
         }
@@ -212,7 +209,6 @@ public class Board {
             this.goalValue = (this.row - 1) * dimension + this.col;
             this.value = tiles[row][col];
         }
-
     }
 
     private Board swap(Tile first, Tile second) {
@@ -223,7 +219,14 @@ public class Board {
     }
 
     private Board cloneBoard() {
-        int[][] newBoardArray = Arrays.stream(this.tiles).map(int[]::clone).toArray(int[][]::new);
+        // this shit's broke because it feeds the array with extra 0s into new board
+        int[][] newBoardArray = new int[dimension][dimension];
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                newBoardArray[i][j] = tiles[i + 1][j + 1];
+            }
+        }
+
         return new Board(newBoardArray);
     }
 }
