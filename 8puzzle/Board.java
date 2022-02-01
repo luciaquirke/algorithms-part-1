@@ -65,8 +65,8 @@ public class Board {
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
                 if (tiles[i][j] != 0 && tiles[i][j] != goalValue) {
-                    int goalRow = ((goalValue - 1) / dimension) + 1;
-                    int goalCol = ((goalValue - 1) % dimension) + 1;
+                    int goalRow = ((tiles[i][j] - 1) / dimension) + 1;
+                    int goalCol = ((tiles[i][j] - 1) % dimension) + 1;
                     manhattan += Math.abs(goalRow - i);
                     manhattan += Math.abs(goalCol - j);
                 }
