@@ -65,7 +65,6 @@ public class Board {
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
                 if (tiles[i][j] != 0 && tiles[i][j] != goalValue) {
-                    // is this wrong?
                     int goalRow = ((goalValue - 1) / dimension) + 1;
                     int goalCol = ((goalValue - 1) % dimension) + 1;
                     manhattan += Math.abs(goalRow - i);
@@ -116,24 +115,39 @@ public class Board {
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
-        Tile emptyTile = new Tile(0);
+        int index = 0;
+        int row = 0;
+        int col = 0;
+
+        int goalValue = 1;
+        for (int i = 1; i <= dimension; i++) {
+            for (int j = 1; j <= dimension; j++) {
+                if (tiles[i][j] == 0) {
+                    index = goalValue;
+                    row = i;
+                    col = j;
+                }
+                goalValue++;
+            }
+        }
+
         Queue<Board> neighbors = new Queue<>();
 
-        if (emptyTile.getRow() != 1) {
-            Tile leftTile = new Tile(emptyTile.getRow() - 1, emptyTile.getCol());
-            neighbors.enqueue(swap(emptyTile, leftTile));
+        if (row != 1) {
+            int leftTile = index - dimension;
+            neighbors.enqueue(swap(index, leftTile));
         }
-        if (emptyTile.getRow() != dimension) {
-            Tile rightTile = new Tile(emptyTile.getRow() + 1, emptyTile.getCol());
-            neighbors.enqueue(swap(emptyTile, rightTile));
+        if (row != dimension) {
+            int rightTile = index + dimension;
+            neighbors.enqueue(swap(index, rightTile));
         }
-        if (emptyTile.getCol() != 1) {
-            Tile topTile = new Tile(emptyTile.getRow(), emptyTile.getCol() - 1);
-            neighbors.enqueue(swap(emptyTile, topTile));
+        if (col != 1) {
+            int topTile = index - 1;
+            neighbors.enqueue(swap(index, topTile));
         }
-        if (emptyTile.getCol() != dimension) {
-            Tile bottomTile = new Tile(emptyTile.getRow(), emptyTile.getCol() + 1);
-            neighbors.enqueue(swap(emptyTile, bottomTile));
+        if (col != dimension) {
+            int bottomTile = index + 1;
+            neighbors.enqueue(swap(index, bottomTile));
         }
 
         return neighbors;
@@ -145,27 +159,29 @@ public class Board {
             throw new Error("no twins! dimension is less than 2");
         }
 
-        Tile first = null;
-        Tile second = null;
+        int first = 0;
+        int second = 0;
 
+        int goalValue = 1;
         for (int i = 1; i <= dimension; i++) {
             for (int j = 1; j <= dimension; j++) {
                 if (tiles[i][j] != 0) {
-                    if (first == null) {
-                        first = new Tile(i, j);
+                    if (first == 0) {
+                        first = goalValue;
                     }
-                    else if (second == null) {
-                        second = new Tile(i, j);
+                    else if (second == 0) {
+                        second = goalValue;
                     }
                     else {
                         break;
                     }
 
                 }
+                goalValue++;
             }
         }
 
-        if (first == null || second == null) {
+        if (first == 0 || second == 0) {
             throw new Error("couldn't find two tiles");
         }
 
@@ -182,48 +198,16 @@ public class Board {
         System.out.println("Checking if board equals reference board: " + testBoard.isGoal());
     }
 
-    // holds conversion information for tile indices.
-    private class Tile {
-        private int row;
-        private int col;
-        private int value;
+    private Board swap(int first, int second) {
+        int firstRow = ((first - 1) / dimension) + 1;
+        int firstCol = ((first - 1) % dimension) + 1;
+        int secondRow = ((second - 1) / dimension) + 1;
+        int secondCol = ((second - 1) % dimension) + 1;
 
-        public Tile(int value) {
-            for (int i = 1; i <= dimension; i++) {
-                for (int j = 1; j <= dimension; j++) {
-                    if (tiles[i][j] == value) {
-                        this.row = i;
-                        this.col = j;
-                        this.value = value;
-                        break;
-                    }
-                }
-            }
-        }
-
-        public Tile(int row, int col) {
-            this.row = row;
-            this.col = col;
-            this.value = tiles[row][col];
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getCol() {
-            return col;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
-    private Board swap(Tile first, Tile second) {
         Board newBoard = cloneBoard();
-        newBoard.tiles[first.getRow()][first.getCol()] = second.getValue();
-        newBoard.tiles[second.getRow()][second.getCol()] = first.getValue();
+        int temp = newBoard.tiles[firstRow][firstCol];
+        newBoard.tiles[firstRow][firstCol] = newBoard.tiles[secondRow][secondCol];
+        newBoard.tiles[secondRow][secondCol] = temp;
         return newBoard;
     }
 

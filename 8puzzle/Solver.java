@@ -12,11 +12,12 @@ import edu.princeton.cs.algs4.StdOut;
 public class Solver {
     private final Node lastNode;
     private final boolean isSolvable;
-    private final MinPQ<Node> minPQ = new MinPQ<>();
-    private final MinPQ<Node> twinMinPQ = new MinPQ<>();
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
+        MinPQ<Node> minPQ = new MinPQ<>();
+        MinPQ<Node> twinMinPQ = new MinPQ<>();
+
         if (initial == null) {
             throw new IllegalArgumentException("Initial board is null");
         }
