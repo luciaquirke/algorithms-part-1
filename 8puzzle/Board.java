@@ -98,8 +98,8 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y == this)
-            return true;
+        if (y == this) return true;
+        if (y == null) return false;
         if (y.getClass() != this.getClass())
             return false;
         if (this.dimension != ((Board) y).dimension)
@@ -228,7 +228,6 @@ public class Board {
     }
 
     private Board cloneBoard() {
-        // this shit's broke because it feeds the array with extra 0s into new board
         int[][] newBoardArray = new int[dimension][dimension];
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
