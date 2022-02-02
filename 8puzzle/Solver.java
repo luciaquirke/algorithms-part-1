@@ -11,7 +11,6 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
     private final Node lastNode;
-    private final boolean isSolvable;
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
@@ -49,18 +48,12 @@ public class Solver {
             twinCurrentNode = twinMinPQ.delMin();
         }
 
-        isSolvable = currentNode.getBoard().isGoal();
-        if (isSolvable()) {
-            lastNode = currentNode;
-        }
-        else {
-            lastNode = null;
-        }
+        lastNode = currentNode.getBoard().isGoal() ? currentNode : null;
     }
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        return isSolvable;
+        return lastNode != null;
     }
 
     // min number of moves to solve initial board; -1 if unsolvable
@@ -118,7 +111,7 @@ public class Solver {
 
         public Node(Node previous, Board board) {
             this.previous = previous;
-            this.moves = previous == null ? 1 : previous.moves + 1;
+            this.moves = previous == null ? 0 : previous.moves + 1;
             this.board = board;
             this.priority = this.getBoard().manhattan() + this.moves;
         }
