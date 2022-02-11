@@ -58,7 +58,6 @@ public class KdTree {
             this.root = new Node();
             this.root.p = p;
             this.root.rect = new RectHV(0, 0, 1, 1);
-            System.out.println("first rect! " + this.root.rect);
         }
         else {
             // insert the new point under its parent
@@ -66,7 +65,6 @@ public class KdTree {
             // this only works because it's a 2d tree so going backwards is the same as going forwards
             double pointValue = level == 1 ? p.x() : p.y();
             double parentValue = level == 1 ? parent.p.x() : parent.p.y();
-            System.out.println("inserting at level " + level);
 
             if (pointValue < parentValue) {
                 parent.lb = new Node();
@@ -77,8 +75,8 @@ public class KdTree {
                     parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(),
                                                 parent.rect.xmax(),
                                                 parent.p.y());
-                    System.out.println("adding lb 0 rect");
-                    System.out.println(parent.lb.rect);
+                    // System.out.println("adding lb 0 rect");
+                    // System.out.println(parent.lb.rect);
                 }
 
                 // first proper insertion at level 1 - based on parent at level 0, therefore by x dimension
@@ -86,8 +84,8 @@ public class KdTree {
                     parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(),
                                                 parent.p.x(),
                                                 parent.rect.ymax());
-                    System.out.println("adding lb 1 rect");
-                    System.out.println(parent.lb.rect);
+                    // System.out.println("adding lb 1 rect");
+                    // System.out.println(parent.lb.rect);
                 }
             }
             else {
@@ -97,62 +95,65 @@ public class KdTree {
                 if (level == 0) {
                     parent.rt.rect = new RectHV(parent.rect.xmin(), parent.p.y(),
                                                 parent.rect.xmax(), parent.rect.ymax());
-                    System.out.println("adding rt 0 rect");
-                    System.out.println(parent.rt.rect);
+                    // System.out.println("adding rt 0 rect");
+                    // System.out.println(parent.rt.rect);
                 }
 
                 if (level == 1) {
                     parent.rt.rect = new RectHV(parent.p.x(), parent.rect.ymin(),
                                                 parent.rect.xmax(), parent.rect.ymax());
-                    System.out.println("adding rt 1 rect");
-                    System.out.println(parent.rt.rect);
+                    // System.out.println("adding rt 1 rect");
+                    // System.out.println(parent.rt.rect);
                 }
 
             }
+            // System.out.println(
+            //         "parent rect: " + parent.rect + " p: " + parent.p.x() + ", " + parent.p.y());
         }
+
         size++;
     }
 
-    private void recursiveInsert(Point2D p, Node current, Node parent, int level, String side) {
-        if (current == null) {
-            Node newNode = new Node();
-            newNode.p = p;
-            if (side.equals("lb")) {
-                parent.lb = newNode;
-
-                if (level == 0)
-                    parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(), p.x(),
-                                                parent.rect.ymax());
-                if (level == 1) parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(),
-                                                            parent.rect.xmax(),
-                                                            p.y());
-
-            }
-            if (side.equals("rt")) {
-                parent.rt = newNode;
-                if (level == 0) parent.rt.rect = new RectHV(p.x(), parent.rect.ymin(),
-                                                            parent.rect.xmax(), parent.rect.ymax());
-                if (level == 1) parent.rt.rect = new RectHV(parent.rect.xmin(), p.y(),
-                                                            parent.rect.xmax(), parent.rect.ymax());
-
-            }
-            return;
-        }
-
-        double pointValue = level == 0 ? p.x() : p.y();
-        double currentValue = level == 0 ? current.p.x() : current.p.y();
-
-        if (pointValue < currentValue) {
-            recursiveInsert(p, current.lb, current, (level + 1) % 2, "lb");
-        }
-        // point already exists
-        else if (pointValue == currentValue) {
-            return;
-        }
-        else if (pointValue >= currentValue) {
-            recursiveInsert(p, current.rt, current, (level + 1) % 2, "rt");
-        }
-    }
+    // private void recursiveInsert(Point2D p, Node current, Node parent, int level, String side) {
+    //     if (current == null) {
+    //         Node newNode = new Node();
+    //         newNode.p = p;
+    //         if (side.equals("lb")) {
+    //             parent.lb = newNode;
+    //
+    //             if (level == 0)
+    //                 parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(), p.x(),
+    //                                             parent.rect.ymax());
+    //             if (level == 1) parent.lb.rect = new RectHV(parent.rect.xmin(), parent.rect.ymin(),
+    //                                                         parent.rect.xmax(),
+    //                                                         p.y());
+    //
+    //         }
+    //         if (side.equals("rt")) {
+    //             parent.rt = newNode;
+    //             if (level == 0) parent.rt.rect = new RectHV(p.x(), parent.rect.ymin(),
+    //                                                         parent.rect.xmax(), parent.rect.ymax());
+    //             if (level == 1) parent.rt.rect = new RectHV(parent.rect.xmin(), p.y(),
+    //                                                         parent.rect.xmax(), parent.rect.ymax());
+    //
+    //         }
+    //         return;
+    //     }
+    //
+    //     double pointValue = level == 0 ? p.x() : p.y();
+    //     double currentValue = level == 0 ? current.p.x() : current.p.y();
+    //
+    //     if (pointValue < currentValue) {
+    //         recursiveInsert(p, current.lb, current, (level + 1) % 2, "lb");
+    //     }
+    //     // point already exists
+    //     else if (pointValue == currentValue) {
+    //         return;
+    //     }
+    //     else if (pointValue >= currentValue) {
+    //         recursiveInsert(p, current.rt, current, (level + 1) % 2, "rt");
+    //     }
+    // }
 
 
     // does the set contain point p?
@@ -160,13 +161,12 @@ public class KdTree {
         Node node = root;
         int level = 0;
         while (node != null) {
-            System.out.println("node rect: " + node.rect + " p: " + node.p.x() + ", " + node.p.y());
             // use parent rect instead of level eventually
             double pointValue = level == 0 ? p.x() : p.y();
             double nodeValue = level == 0 ? node.p.x() : node.p.y();
 
             if (pointValue < nodeValue) {
-                System.out.println("changing node to lb");
+                // System.out.println("changing node to lb");
                 node = node.lb;
                 level = (level + 1) % 2;
             }
@@ -175,7 +175,7 @@ public class KdTree {
                     return true;
                 }
                 node = node.rt;
-                System.out.println("changing node to rt");
+                // System.out.println("changing node to rt");
 
                 level = (level + 1) % 2;
             }
@@ -187,35 +187,44 @@ public class KdTree {
     public void draw() {
         if (root == null) return;
 
-        StdDraw.setPenRadius(0.01);
+        StdDraw.setPenRadius(0.02);
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.point(root.p.x(), root.p.y());
+        StdDraw.setPenRadius(0.005);
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.line(root.p.x(), 0, root.p.x(), 1);
 
-        draw(root.lb, root, 1);
-        draw(root.rt, root, 1);
+        draw(root.lb, root, 1, "lb");
+        draw(root.rt, root, 1, "rt");
+        // System.out.println("done");
     }
 
-    private void draw(Node node, Node parent, int level) {
+    private void draw(Node node, Node parent, int level, String side) {
         if (node == null) return;
 
-        StdDraw.setPenRadius(0.005);
-
-        System.out.println("drawing at level " + level);
-        if (level == 0) {
-            StdDraw.setPenColor(StdDraw.RED);
-            StdDraw.line(node.rect.xmin(), parent.p.y(), node.rect.xmax(), parent.p.y());
-        }
-        if (level == 1) {
-            StdDraw.setPenColor(StdDraw.BLUE);
-            StdDraw.line(parent.p.x(), node.rect.ymin(), parent.p.x(), node.rect.ymax());
-        }
-
-        StdDraw.setPenRadius(0.01);
+        StdDraw.setPenRadius(0.02);
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.point(node.p.x(), node.p.y());
 
-        draw(node.lb, node, (level + 1) % 2);
-        draw(node.rt, node, (level + 1) % 2);
+        StdDraw.setPenRadius(0.005);
+        if (level == 0) {
+            StdDraw.setPenColor(StdDraw.RED);
+            StdDraw.line(node.p.x(), node.rect.ymin(), node.p.x(), node.rect.ymax());
+            // System.out.println(
+            //         node.p.x() + ", " + node.rect.ymin() + ", " + node.p.x() + ", " + node.rect
+            //                 .ymax());
+        }
+        if (level == 1) {
+            StdDraw.setPenColor(StdDraw.BLUE);
+            StdDraw.line(node.rect.xmin(), node.p.y(), node.rect.xmax(), node.p.y());
+            // System.out.println(
+            //         node.rect.xmin() + ", " + node.p.y() + ", " + node.rect.xmax() + ", "
+            //                 + node.p.y());
+
+        }
+
+        draw(node.lb, node, (level + 1) % 2, "lb");
+        draw(node.rt, node, (level + 1) % 2, "rt");
     }
 
     // all points that are inside the rectangle (or on the boundary)
@@ -232,11 +241,11 @@ public class KdTree {
 
     public static void main(String[] args) {
         KdTree kdTree = new KdTree();
-        kdTree.insert(new Point2D(0.1, 0.9));
-        kdTree.insert(new Point2D(0.2, 0.9));
-        kdTree.insert(new Point2D(0.8, 0.9));
         kdTree.insert(new Point2D(0.5, 0.5));
-        kdTree.insert(new Point2D(0.4, 0.5));
+        kdTree.insert(new Point2D(0.2, 0.3));
+        kdTree.insert(new Point2D(0.8, 0.7));
+        kdTree.insert(new Point2D(0.1, 0.9));
+        kdTree.insert(new Point2D(0.4, 0.6));
         kdTree.insert(new Point2D(0.3, 0.1));
         assert !kdTree.contains(new Point2D(0.5, 0.1));
         //assert kdTree.contains(new Point2D(0.4, 0.5));
@@ -250,17 +259,3 @@ public class KdTree {
         private Node rt;        // the right/top subtree
     }
 }
-
-
-// System.out.println(
-//         "new rect, level = " + level + " xmin: " + parent.rect.xmin() + " xmax: "
-//         + parent.rect.xmax() + " ymin: " + parent.rect.ymin() + " ymax: "
-//         + parent.rect.ymax() + " p x: "
-//         + p.x());
-
-
-// System.out.println(
-//         "new rect, level = " + level + " xmin: " + parent.rect.xmin() + " xmax: "
-//         + parent.rect.xmax() + " ymin: " + parent.rect.ymin() + " ymax: "
-//         + parent.rect.ymax() + " p x: "
-//         + p.x());
