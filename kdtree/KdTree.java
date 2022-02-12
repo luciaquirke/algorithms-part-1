@@ -244,7 +244,7 @@ public class KdTree {
     // search the subtree that is on the same side of the splitting line as the query point first
     private Point2D nearest(Point2D p, Node current, Point2D best) {
         // does this work if current is root and rect is the unit square? yes
-        if (current != null && current.rect.distanceSquaredTo(p) <= p.distanceSquaredTo(best)) {
+        if (current != null && current.rect.distanceSquaredTo(p) < p.distanceSquaredTo(best)) {
             if (p.distanceSquaredTo(current.p) < p.distanceSquaredTo(best)) {
                 best = current.p;
             }
