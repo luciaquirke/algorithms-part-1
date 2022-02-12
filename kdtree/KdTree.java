@@ -185,20 +185,10 @@ public class KdTree {
     // draw all points to standard draw
     public void draw() {
         if (root == null) return;
-
-        StdDraw.setPenRadius(0.02);
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.point(root.p.x(), root.p.y());
-        StdDraw.setPenRadius(0.005);
-        StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.line(root.p.x(), 0, root.p.x(), 1);
-
-        draw(root.lb, root, 1, "lb");
-        draw(root.rt, root, 1, "rt");
-        // System.out.println("done");
+        draw(root, 0);
     }
 
-    private void draw(Node node, Node parent, int level, String side) {
+    private void draw(Node node, int level) {
         if (node == null) return;
 
         StdDraw.setPenRadius(0.02);
@@ -215,8 +205,8 @@ public class KdTree {
             StdDraw.line(node.rect.xmin(), node.p.y(), node.rect.xmax(), node.p.y());
         }
 
-        draw(node.lb, node, (level + 1) % 2, "lb");
-        draw(node.rt, node, (level + 1) % 2, "rt");
+        draw(node.lb, (level + 1) % 2);
+        draw(node.rt, (level + 1) % 2);
     }
 
     // all points that are inside the rectangle (or on the boundary)
