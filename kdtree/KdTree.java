@@ -171,12 +171,11 @@ public class KdTree {
                 level = (level + 1) % 2;
             }
             else {
+                // System.out.println("changing node to rt");
                 if (p.x() == node.p.x() && p.y() == node.p.y()) {
                     return true;
                 }
                 node = node.rt;
-                // System.out.println("changing node to rt");
-
                 level = (level + 1) % 2;
             }
         }
@@ -210,17 +209,10 @@ public class KdTree {
         if (level == 0) {
             StdDraw.setPenColor(StdDraw.RED);
             StdDraw.line(node.p.x(), node.rect.ymin(), node.p.x(), node.rect.ymax());
-            // System.out.println(
-            //         node.p.x() + ", " + node.rect.ymin() + ", " + node.p.x() + ", " + node.rect
-            //                 .ymax());
         }
         if (level == 1) {
             StdDraw.setPenColor(StdDraw.BLUE);
             StdDraw.line(node.rect.xmin(), node.p.y(), node.rect.xmax(), node.p.y());
-            // System.out.println(
-            //         node.rect.xmin() + ", " + node.p.y() + ", " + node.rect.xmax() + ", "
-            //                 + node.p.y());
-
         }
 
         draw(node.lb, node, (level + 1) % 2, "lb");
@@ -229,14 +221,40 @@ public class KdTree {
 
     // all points that are inside the rectangle (or on the boundary)
     public Iterable<Point2D> range(RectHV rect) {
-        // not implemented
-        return new ArrayList();
+        return range(rect, root);
+    }
+
+    private ArrayList<Point2D> range(RectHV rect, Node current) {
+        ArrayList<Point2D> rangePoints = new ArrayList<>();
+
+        if (current != null && current.rect.intersects(rect)) {
+            rangePoints.add(current.p);
+            rangePoints.addAll(range(rect, current.lb));
+            rangePoints.addAll(range(rect, current.rt));
+        }
+
+        return rangePoints;
     }
 
     // a nearest neighbor in the set to point p; null if the set is empty
     public Point2D nearest(Point2D p) {
-        // not implemented
-        return p;
+        if (root == null) return null;
+        Point2D nearest = root.p;
+        nearest(p, root, nearest);
+        return nearest;
+    }
+
+    // query point = p
+    // splitting line = ?
+    // search the subtree that is on the same side of the splitting line as the query point first
+    private void nearest(Point2D p, Node current, Point2D best) {
+        if (current != null && current.rect.distanceSquaredTo(p) <= p.distanceSquaredTo(best)) {
+            if (p.distanceSquaredTo(current.p) < p.distanceSquaredTo(best)) {
+                best = current.p;
+            }
+            nearest(p, current.lb, best);
+            nearest(p, current.rt, best);
+        }
     }
 
     public static void main(String[] args) {
@@ -248,7 +266,7 @@ public class KdTree {
         kdTree.insert(new Point2D(0.4, 0.6));
         kdTree.insert(new Point2D(0.3, 0.1));
         assert !kdTree.contains(new Point2D(0.5, 0.1));
-        //assert kdTree.contains(new Point2D(0.4, 0.5));
+        assert kdTree.contains(new Point2D(0.4, 0.6));
         kdTree.draw();
     }
 
