@@ -241,7 +241,7 @@ public class KdTree {
     // search the subtree that is on the same side of the splitting line as the query point first
     private void nearest(Point2D p, Node current, Point2D best, int level) {
         if (current != null && current.rect.distanceSquaredTo(p) <= p.distanceSquaredTo(best)) {
-            if (p.distanceSquaredTo(current.p) < p.distanceSquaredTo(best)) {
+            if (p.distanceSquaredTo(current.p) <= p.distanceSquaredTo(best)) {
                 best = current.p;
             }
 
