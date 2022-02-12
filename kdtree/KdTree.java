@@ -218,7 +218,9 @@ public class KdTree {
         ArrayList<Point2D> rangePoints = new ArrayList<>();
 
         if (current != null && current.rect.intersects(rect)) {
-            rangePoints.add(current.p);
+
+            // check if the point is in range
+            if (rect.contains(current.p)) rangePoints.add(current.p);
             rangePoints.addAll(range(rect, current.lb));
             rangePoints.addAll(range(rect, current.rt));
         }
@@ -243,7 +245,7 @@ public class KdTree {
                 best = current.p;
             }
 
-            if (current.lb.rect.contains(p)) {
+            if (current.lb != null && current.lb.rect.contains(p)) {
                 nearest(p, current.lb, best, (level + 1) % 2);
                 nearest(p, current.rt, best, (level + 1) % 2);
             }
