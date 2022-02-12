@@ -235,30 +235,32 @@ public class KdTree {
     public Point2D nearest(Point2D p) {
         checkNull(p);
         if (root == null) return null;
-        Point2D nearest = root.p;
-        nearest(p, root, nearest, 0);
+        Point2D nearest = nearest(p, root, root.p);
         return nearest;
     }
 
     // query point = p
     // splitting line = ?
     // search the subtree that is on the same side of the splitting line as the query point first
-    private void nearest(Point2D p, Node current, Point2D best, int level) {
+    private Point2D nearest(Point2D p, Node current, Point2D best) {
+        // does this work if current is root and rect is the unit square? yes
         if (current != null && current.rect.distanceSquaredTo(p) <= p.distanceSquaredTo(best)) {
-            if (p.distanceSquaredTo(current.p) <= p.distanceSquaredTo(best)) {
+            if (p.distanceSquaredTo(current.p) < p.distanceSquaredTo(best)) {
                 best = current.p;
             }
 
             if (current.lb != null && current.lb.rect.contains(p)) {
-                nearest(p, current.lb, best, (level + 1) % 2);
-                nearest(p, current.rt, best, (level + 1) % 2);
+                best = nearest(p, current.lb, best);
+                best = nearest(p, current.rt, best);
             }
             else {
-                nearest(p, current.rt, best, (level + 1) % 2);
-                nearest(p, current.lb, best, (level + 1) % 2);
+                best = nearest(p, current.rt, best);
+                best = nearest(p, current.lb, best);
             }
 
         }
+
+        return best;
     }
 
     public static void main(String[] args) {
