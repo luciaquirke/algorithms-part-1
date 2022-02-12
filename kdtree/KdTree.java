@@ -240,20 +240,28 @@ public class KdTree {
     public Point2D nearest(Point2D p) {
         if (root == null) return null;
         Point2D nearest = root.p;
-        nearest(p, root, nearest);
+        nearest(p, root, nearest, 0);
         return nearest;
     }
 
     // query point = p
     // splitting line = ?
     // search the subtree that is on the same side of the splitting line as the query point first
-    private void nearest(Point2D p, Node current, Point2D best) {
+    private void nearest(Point2D p, Node current, Point2D best, int level) {
         if (current != null && current.rect.distanceSquaredTo(p) <= p.distanceSquaredTo(best)) {
             if (p.distanceSquaredTo(current.p) < p.distanceSquaredTo(best)) {
                 best = current.p;
             }
-            nearest(p, current.lb, best);
-            nearest(p, current.rt, best);
+
+            if (current.lb.rect.contains(p)) {
+                nearest(p, current.lb, best, (level + 1) % 2);
+                nearest(p, current.rt, best, (level + 1) % 2);
+            }
+            else {
+                nearest(p, current.rt, best, (level + 1) % 2);
+                nearest(p, current.lb, best, (level + 1) % 2);
+            }
+
         }
     }
 
