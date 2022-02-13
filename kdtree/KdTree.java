@@ -249,7 +249,28 @@ public class KdTree {
                 best = current.p;
             }
 
-            if (current.lb != null && current.lb.rect.contains(p)) {
+            // needs to check across the whole dividing line in case the point isn't in the right rectangle?
+            // if (current.lb != null && current.lb.rect.contains(p)) {
+            boolean pointOnLB = false;
+            if (current.lb != null) {
+                if (current.rect.xmax() == current.lb.rect.xmax()
+                        && current.rect.xmin() == current.lb.rect.xmin()) {
+
+                    // if lb.rect and current.rect have the same xmin and xmax then lb is bottom, not left,
+                    // so the point is on lb's side if the point's y is below lb's ymax.
+                    if (current.lb.rect.ymax() > p.y()) {
+                        pointOnLB = true;
+                    }
+                }
+                else {
+                    // lb is left so the point is on lb's side if the point's x is below lb's xmax
+                    if (current.lb.rect.xmax() > p.x()) {
+                        pointOnLB = true;
+                    }
+                }
+            }
+
+            if (pointOnLB) {
                 best = nearest(p, current.lb, best);
                 best = nearest(p, current.rt, best);
             }
@@ -257,7 +278,6 @@ public class KdTree {
                 best = nearest(p, current.rt, best);
                 best = nearest(p, current.lb, best);
             }
-
         }
 
         return best;
