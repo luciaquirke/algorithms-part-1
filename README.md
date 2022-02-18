@@ -2,8 +2,7 @@
 
 ## Percolation
 
-Modelling connectivity in systems composed of permeable and non-permeable parts, e.g. conductance in a system of metallic and non-metallic particles, or water flowing through empty and full sites.
-The model uses the weighted quick union algorithm.
+Modelling connectivity in systems composed of permeable and non-permeable parts, such as conductance in a system of metallic and non-metallic particles, or water flowing through a mixture of dirt and gravel. The model uses the weighted quick union algorithm.
 
 A difficult bug, backwash, can occur when visualising system connectivity. Areas connected to the system entrance are coloured blue. Because all the exit areas are connected, when a blue area is connected to the system exit all areas connected to the exit turn blue, even if they're not directly connected to the entrance. You can fix this by adding a separate weighted quick union data structure solely for visualisation, without connected exit areas.
 
