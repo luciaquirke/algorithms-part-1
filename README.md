@@ -24,3 +24,5 @@ Solve an sliding tile game using the A* algorithm with manhattan distances. Uses
 
 Implements a 2d-tree to support efficient range search (finding all the coordinates contained in a given area) and nearest neighbour search.
 Includes a brute force implementation using a red-black BST.
+
+For range searches that a sweep line algorithm can't handle.
